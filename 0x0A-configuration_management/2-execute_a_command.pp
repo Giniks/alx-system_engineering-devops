@@ -1,8 +1,7 @@
 # kill process killmenow
 
-exec { 'killmenow':
+exec { 'pkill':
   command => 'pkill killmenow',
   provider => 'shell',
-  onlyif  => 'pgrep killmenow',
 }
 
