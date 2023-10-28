@@ -1,7 +1,6 @@
-# This code will kill process and works together with killmenow file.
-exec { 'killmenow':
-  command  => '/usr/bin/pkill killmenow',
-  provider => 'shell',
-  return   => [0, 1],
+# Execute a command to kill a process named 'killmenow' using Puppet.
+
+exec { 'kill_process':
+  command => '/usr/bin/pkill -f killmenow',
 }
 
