@@ -1,4 +1,4 @@
-# Install a specific version of Flask (2.1.0) using pip3
+#This code will install the package puppet-lint
 
 package { 'flask':
   ensure   => '2.1.0',
