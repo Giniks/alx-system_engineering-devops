@@ -1,0 +1,36 @@
+#!/usr/bin/env bash
+# This bash script is to configure Nginx for URL redirection
+
+# Firstly, update the package lists for available software packages
+apt-get update
+
+# Secondly, install Nginx if not already installed
+if ! dpkg -l | grep -q nginx; then
+    apt-get install -y nginx
+fi
+
+# Thirdly, create a simple HTML page for the redirection
+echo '<html><head><meta http-equiv="refresh" content="0;url=https://www.example.com"></head></html>' > /var/www/html/redirect.html
+
+# Finally, configure Nginx for the redirection
+echo "server {
+    listen 80;
+    server_name lizcode.tech;
+
+    location /redirect_me {
+        return 301 https://www.example.com;
+    }
+
+    location / {
+        root /var/www/html;
+        index index.html;
+    }
+}" > /etc/nginx/sites-available/redirect
+
+# Here a  symbolic link is created to enable the new site configuration
+ln -s /etc/nginx/sites-available/redirect /etc/nginx/sites-enabled/
+
+# Test the Nginx configuration and reload
+nginx -t
+service nginx reload
+

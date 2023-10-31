@@ -1,0 +1,23 @@
+i#!/bin/bash
+# Bash script to install and configure Nginx on Ubuntu
+
+# Update the package lists for available software packages
+apt-get update
+
+# To install Nginx
+apt-get install -y nginx
+
+# This script is to create a simple "Hello World!" HTML page
+echo "Hello World!" > /var/www/html/index.html
+
+# To check if Nginx is already running, and if not, start it
+if ! pgrep nginx > /dev/null; then
+    service nginx start
+fi
+
+# To check the Nginx status
+if pgrep nginx > /dev/null; then
+    echo "Nginx is running and listening on port 80."
+else
+    echo "Nginx is not running or failed to start."
+fi
