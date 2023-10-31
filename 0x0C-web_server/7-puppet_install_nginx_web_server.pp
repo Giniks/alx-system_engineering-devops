@@ -1,52 +1,42 @@
-# The puppet manifest to configure an Nginx server
-class nginx_server {
-  # To install Nginx package
-  package { 'nginx':
-    ensure => installed,
-  }
+$default_site_loc = '/etc/nginx/sites-available/default'
+$default_site = 'https://raw.githubusercontent.com/osala-eng/alx-system_engineering-devops/master/0x0C-web_server/default-site'
 
-  # To ensure Nginx service is running and enabled
-  service { 'nginx':
-    ensure  => running,
-    enable  => true,
-    require => Package['nginx'],
-  }
+# Run apt-get update
+exec { 'apt-update':
+  command => '/usr/bin/apt-get update'
+}
 
-  # To define the default Nginx server block
-  file { '/etc/nginx/sites-available/default':
-    ensure  => present,
-    content => "
-      server {
-        listen      80 default_server;
-        listen      [::]:80 default_server;
-        root        /var/www/html;
-        index       index.html index.htm;
+# Install nginx
+package { 'nginx':
+  ensure  => installed,
+  require => Exec['apt-update'],
+}
 
-        location / {
-          return 200 'Hello World!';
-        }
+# Create a new index.html
+file { 'Create index.html':
+  require => Package['nginx'],
+  path    => '/var/www/html/index.html',
+  content => 'Hello World!\n'
+}
 
-        location /redirect_me {
-          return 301 http://cuberule.com/;
-        }
-      }
-    ",
-    notify => Service['nginx'],
-  }
+# Create a new error page
+file { 'Create 404.html':
+  require => Package['nginx'],
+  path    => '/var/www/html/404.html',
+  content => 'Ceci n\'est pas une page\n'
+}
 
-  # Define a new server block for the 301 redirect
-  nginx::resource::server { 'redirect_server':
-    listen_port    => 80,
-    server_name    => 'lizcode.tech',
-    location       => {
-      '/' => {
-        ensure => 'absent', # Remove the root location
-      },
-      '/redirect_me' => {
-        ensure  => 'present', # Define the /redirect_me location
-        content => 'return 301 http://cuberule.com;', # Perform the 301 redirect
-      },
-    },
-  }
+# Replace default site config
+file { '/etc/nginx/sites-available/default':
+  ensure  => file,
+  require => Package['nginx']
+}-> exec { 'Replace config':
+  command => "/usr/bin/curl ${default_site} > ${default_site_loc}"
+}
+
+# Start nginx service
+service { 'nginx':
+  ensure  => running,
+  require => Exec['Replace config'],
 }
 
