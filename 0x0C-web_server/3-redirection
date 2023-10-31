@@ -1,36 +1,15 @@
 #!/usr/bin/env bash
-# This bash script is to configure Nginx for URL redirection
+# A bash script to perform nginx server install and config
 
-# Firstly, update the package lists for available software packages
-apt-get update
+sudo apt-get -y update
+sudo apt-get -y install nginx
+echo "Hello World!" | sudo tee /var/www/html/index.html
 
-# Secondly, install Nginx if not already installed
-if ! dpkg -l | grep -q nginx; then
-    apt-get install -y nginx
-fi
+# To configure nginx server
+default_sites="/etc/nginx/sites-available/default"
+location=$(grep -Fn location $default_sites | head -1 | cut -d":" -f1)
+location_data="\\\tlocation /redirect_me {\n\t\treturn 301 https://youtu.be/mlUOUncSaTk;\n\t}\n\n"
 
-# Thirdly, create a simple HTML page for the redirection
-echo '<html><head><meta http-equiv="refresh" content="0;url=https://www.example.com"></head></html>' > /var/www/html/redirect.html
-
-# Finally, configure Nginx for the redirection
-echo "server {
-    listen 80;
-    server_name lizcode.tech;
-
-    location /redirect_me {
-        return 301 https://www.example.com;
-    }
-
-    location / {
-        root /var/www/html;
-        index index.html;
-    }
-}" > /etc/nginx/sites-available/redirect
-
-# Here a  symbolic link is created to enable the new site configuration
-ln -s /etc/nginx/sites-available/redirect /etc/nginx/sites-enabled/
-
-# Test the Nginx configuration and reload
-nginx -t
-service nginx reload
-
+## To update default site to redirect and start nginx server
+sudo sed -i "${location}i ${location_data}" ${default_sites}
+sudo service nginx start
