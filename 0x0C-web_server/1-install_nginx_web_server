@@ -31,6 +31,5 @@ if pgrep nginx > /dev/null; then
 else
     echo "Nginx is not running or failed to start."
 fi
-# Restart the Nginx service to apply the configuration changes.
-service nginx restart
+
 
