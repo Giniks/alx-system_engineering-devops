@@ -1,4 +1,4 @@
-i#!/bin/bash
+#!/usr/bin/env bash
 # Bash script to install and configure Nginx on Ubuntu
 
 # Update the package lists for available software packages
