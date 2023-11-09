@@ -1,9 +1,12 @@
 #!/usr/bin/env bash
-# This script will configure and nginx server to listen to port 80.
+# This script will configure an Nginx server to listen on port 80.
 
-# remove the default nginx configuration file
-rm /etc/nginx/sites-enabled/default
-# confirm nginx to listen on port 80 for every active Ip4 ips
-ln -s /etc/nginx/sites-enabled/default /etc/nginx/sites-enabled/default
-# restart nginx
+# Remove the default nginx symbolic link
+unlink /etc/nginx/sites-enabled/default
+
+# Create a new symbolic link for the default configuration
+ln -s /etc/nginx/sites-available/default /etc/nginx/sites-enabled/default
+
+# Restart nginx
 service nginx restart
+
