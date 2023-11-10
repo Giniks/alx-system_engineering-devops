@@ -4,7 +4,7 @@
 # Function to retrieve and display information about a subdomain
 domain_information() {
     # Perform DNS search for the subdomain under the specified domain
-    line=$(dig "$2.$1" | grep -A1 'ANSWER SECTION:' | awk '{print $1, $4}')
+    line=$(dig "$2.$1" | grep -A1 'ANSWER SECTION:' | awk '{print $1, $2, $3}')
     # Extract relevant information and print it
     echo "The subdomain $2 is a $line record and points to $1"
 }
