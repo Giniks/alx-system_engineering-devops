@@ -1,8 +1,6 @@
 # Check the status of ufw to make sure it is active by running:
 sudo ufw status
 
-# If ufw is not active, you can enable it by running:
-suo ufw enable
 # Set the default incoming policy to "deny" 
 # To block all incoming traffic by running:
 sudo ufw default deny incomming
@@ -19,7 +17,7 @@ sudo ufw allow 80/tcp
 
 # Verify that the rules have been added by running:
 
-sudo ufw show added
+sudo ufw staus verbose
 
 # Again eable ufw by running:
 sudo ufw enable
